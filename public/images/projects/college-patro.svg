@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <title>College Patro — abstract calendar artwork</title>
+  <rect width="800" height="500" fill="#0A0F19"/>
+  <g stroke="#E9F1FF" stroke-opacity=".05">
+    <path d="M0 100H800M0 200H800M0 300H800M0 400H800"/>
+    <path d="M100 0V500M200 0V500M300 0V500M400 0V500M500 0V500M600 0V500M700 0V500"/>
+  </g>
+  <g fill="none" stroke="#597BFF" stroke-opacity=".3">
+    <rect x="184" y="130" width="432" height="260"/>
+    <path d="M184 190H616M184 250H616M184 310H616M292 130V390M400 130V390M508 130V390"/>
+  </g>
+  <g fill="#E9F1FF" fill-opacity=".2">
+    <rect x="208" y="208" width="60" height="18"/>
+    <rect x="316" y="268" width="60" height="18"/>
+    <rect x="424" y="208" width="60" height="18"/>
+    <rect x="532" y="328" width="60" height="18"/>
+  </g>
+  <rect x="424" y="328" width="60" height="18" fill="#597BFF" fill-opacity=".7"/>
+  <circle cx="292" cy="250" r="6" fill="#A88CFF"/>
+  <path d="M80 390C140 330 140 210 80 150" fill="none" stroke="#A88CFF" stroke-opacity=".2" stroke-dasharray="2 8"/>
+  <text x="52" y="60" font-family="ui-monospace, Menlo, monospace" font-size="11" letter-spacing="4" fill="#9CAAC2">OPTIONAL / SAAS</text>
+  <text x="52" y="452" font-family="Helvetica Neue, Arial, sans-serif" font-size="28" letter-spacing="-1" fill="#E9F1FF">College Patro</text>
+</svg>

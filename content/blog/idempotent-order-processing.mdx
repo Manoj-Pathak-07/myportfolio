@@ -1,0 +1,188 @@
+---
+title: "Idempotent order processing without a distributed system"
+titleNe: "वितरित प्रणाली बिना अर्डर प्रशोधनलाई इडेम्पोटेन्ट बनाउने"
+description: "Most stores do not need Kafka to duplicate an order. They need a unique constraint, an explicit state machine, and a transaction boundary in the right place."
+descriptionNe: "अर्डर दोहोर्याउन अधिकांश स्टोरलाई Kafka चाहिँदैन। चाहिन्छ त केवल युनिक कन्स्ट्रेट, स्पष्ट स्टेट मेसिन र सही ठाउँमा ट्रान्ज्याक्सन सीमा।"
+date: "2026-09-18"
+category: "Backend"
+categoryNe: "ब्याकइन्ड"
+tags: [Laravel, E-commerce, Data]
+relatedProjects: [ecommerce-platform]
+featured: false
+---
+
+The first duplicate order usually arrives in a support message, not a monitoring alert. A customer taps "Place order" twice on a slow connection, the request is retried by the browser or a proxy, and two rows appear in the database.
+
+You do not need a message broker or a distributed transaction to prevent this. A single relational database gives you the tools: a unique constraint, an explicit state machine, and a transaction that does one thing.
+
+## The failure mode is retries, not malice
+
+Order creation is usually not the problem. Everything around it is:
+
+- The client submits twice because the button did not respond.
+- A payment callback is delivered more than once.
+- A queue job times out after committing and is retried.
+- An operations script re-runs a failed import.
+
+Each of these is a normal event. The system should treat a repeated request as the same intent, not as a new one.
+
+## Give the client an idempotency key
+
+Generate a key when the checkout form is first rendered. Send it with the submission. Store it on the order with a unique constraint.
+
+```php
+Schema::create('orders', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('tenant_id')->constrained();
+    $table->foreignId('customer_id')->constrained();
+    $table->string('idempotency_key')->unique();
+    $table->string('status')->default('pending');
+    $table->unsignedBigInteger('total_minor');
+    $table->timestamps();
+});
+```
+
+The unique index is the guarantee. Application checks are an optimisation; the database is the arbiter. Two concurrent requests with the same key cannot both insert a row.
+
+## Make the create path return the existing order
+
+The endpoint should be safe to call again. If the key already exists, return the existing order instead of failing with a 500.
+
+```php
+public function store(StoreOrderRequest $request): JsonResponse
+{
+    $order = DB::transaction(function () use ($request) {
+        $existing = Order::query()
+            ->where('idempotency_key', $request->string('idempotency_key'))
+            ->lockForUpdate()
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        $order = Order::create([
+            'tenant_id' => tenant()->id,
+            'customer_id' => $request->user()->id,
+            'idempotency_key' => $request->string('idempotency_key'),
+            'status' => OrderStatus::Pending,
+            'total_minor' => $this->calculateTotal($request),
+        ]);
+
+        $order->items()->createMany($request->input('items'));
+
+        return $order;
+    });
+
+    return response()->json($order, 201);
+}
+```
+
+Two subtleties:
+
+`lockForUpdate()` inside the transaction helps when the row already exists. The unique constraint still handles the race where two transactions attempt the first insert. Catch the duplicate-key exception and fetch the existing row rather than surfacing an error.
+
+Also, calculate the total on the server from product data. Never trust a total sent by the browser; the idempotency key protects against duplicates, not tampering.
+
+## Model order status as explicit transitions
+
+A string column with free-form updates becomes impossible to reason about. Define the states and the allowed moves.
+
+```php
+enum OrderStatus: string
+{
+    case Pending = 'pending';
+    case Paid = 'paid';
+    case Fulfilled = 'fulfilled';
+    case Cancelled = 'cancelled';
+    case Refunded = 'refunded';
+
+    public function canTransitionTo(self $next): bool
+    {
+        return match ($this) {
+            self::Pending => in_array($next, [self::Paid, self::Cancelled], true),
+            self::Paid => in_array($next, [self::Fulfilled, self::Refunded], true),
+            self::Fulfilled => $next === self::Refunded,
+            self::Cancelled, self::Refunded => false,
+        };
+    }
+}
+```
+
+Then guard the transition in one place:
+
+```php
+public function transitionTo(OrderStatus $next): void
+{
+    if (! $this->status->canTransitionTo($next)) {
+        throw new InvalidOrderTransition($this->status, $next);
+    }
+
+    $this->update(['status' => $next]);
+}
+```
+
+Now a duplicated payment callback that tries to mark an already-paid order as paid becomes a no-op or a handled exception, not a second fulfilment.
+
+## Put the payment call outside the database transaction
+
+This is the mistake that turns a duplicate into a stuck order. Do not hold a database transaction open while waiting for a payment provider.
+
+The safer sequence is:
+
+1. Create the order as `pending` with its idempotency key in a short transaction.
+2. Call the payment provider outside that transaction.
+3. Record the payment result in a second, short transaction that moves the order to `paid` only if it is still `pending`.
+
+If step 2 succeeds and step 3 fails, you have a pending order with a successful payment. That is recoverable: reconcile against the provider's reference. The opposite — charging twice because the order state was rewritten — is much worse.
+
+## Make callbacks idempotent too
+
+Payment webhooks are delivered at least once in practice. Store the provider's event or transaction identifier with a unique constraint.
+
+```php
+Schema::create('payment_events', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('order_id')->constrained();
+    $table->string('provider_reference')->unique();
+    $table->string('type');
+    $table->json('payload');
+    $table->timestamps();
+});
+```
+
+Inserting the event first and then transitioning the order means a replay hits the unique constraint and stops before it can mutate anything.
+
+## Test the repeated request, not only the first one
+
+The test that matters looks like this:
+
+```php
+public function test_submitting_the_same_key_creates_one_order(): void
+{
+    $payload = [
+        'idempotency_key' => 'checkout-abc-123',
+        'items' => [['product_id' => 1, 'quantity' => 2]],
+    ];
+
+    $first = $this->actingAs($this->customer)->postJson('/api/orders', $payload);
+    $second = $this->actingAs($this->customer)->postJson('/api/orders', $payload);
+
+    $first->assertCreated();
+    $second->assertCreated();
+
+    $this->assertDatabaseCount('orders', 1);
+    $this->assertSame($first->json('id'), $second->json('id'));
+}
+```
+
+Add the concurrent variant with two parallel requests against a real database. SQLite in memory will not exercise the same locking behaviour as MySQL, so the unique constraint is the part you are actually testing there.
+
+## What not to do
+
+- Do not check for an existing order and then insert without a unique constraint. The gap between the check and the insert is the bug.
+- Do not use the payment provider's response as the source of truth for whether an order exists.
+- Do not retry a failed job that creates orders without passing the same idempotency key.
+- Do not store a free-form status string and hope every code path agrees.
+
+A relational database is enough for this problem. The work is in deciding where the transaction starts, where it ends, and which invariant the database enforces even when two requests arrive at the same millisecond.

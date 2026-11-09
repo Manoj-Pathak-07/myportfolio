@@ -1,0 +1,162 @@
+---
+title: "Multi-tenant isolation in Laravel: the parts that actually break"
+titleNe: "Laravel मा मल्टि-टेनन्ट अलगाव: वास्तवमा कहाँ बिग्रन्छ"
+description: "Tenant leaks rarely come from the query you wrote in a controller. They come from jobs, caches, route binding, and the paths that skip your global scope."
+descriptionNe: "टेनन्ट डेटा चुहावट प्रायः कन्ट्रोलरको क्वेरीबाट हुँदैन। यो जब, क्यास, रुट बाइन्डिङ र ग्लोबल स्कोप छाड्ने बाटोबाट हुन्छ।"
+date: "2026-10-22"
+category: "Backend"
+categoryNe: "ब्याकइन्ड"
+tags: [Laravel, Multi-tenancy, Security]
+relatedProjects: [school-management-system]
+featured: true
+---
+
+A multi-tenant application has one requirement that outranks every feature request: a tenant must never see another tenant's data. Most teams get the happy path right early. The query in the controller is scoped, the page looks correct, and the demo passes.
+
+Then a queued export runs without request context. A cache key is shared between two tenants. A route model binding resolves an ID before the tenant scope is applied. None of these look like tenant bugs until a school sees another school's attendance register.
+
+This is the checklist I use when building tenant-aware Laravel applications.
+
+## Resolve the tenant before application code runs
+
+Tenant resolution belongs in middleware, and it belongs early. Controllers, policies, jobs, and validation rules should all be able to assume that a tenant exists.
+
+```php
+final class ResolveTenant
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        $tenant = Tenant::query()
+            ->where('domain', $request->getHost())
+            ->where('active', true)
+            ->firstOrFail();
+
+        app()->instance(Tenant::class, $tenant);
+        URL::defaults(['tenant' => $tenant->slug]);
+
+        return $next($request);
+    }
+}
+```
+
+Two details matter. First, resolve from something the user cannot forge casually, such as a verified domain or a subdomain mapped in your database. Second, fail closed. If the tenant cannot be resolved, the request should stop, not continue with a null tenant that silently widens every query.
+
+## Put the tenant in the query, not in the controller
+
+A global scope is the right default. It is also the place where teams accidentally create invisible behaviour.
+
+```php
+final class TenantScope implements Scope
+{
+    public function apply(Builder $builder, Model $model): void
+    {
+        $tenant = app(Tenant::class);
+
+        $builder->where(
+            $model->qualifyColumn('tenant_id'),
+            $tenant->id,
+        );
+    }
+}
+```
+
+There are legitimate cross-tenant queries: platform administration, migrations, and aggregate reporting. Do not solve that by removing the scope inside a controller. Make the bypass explicit and audited.
+
+```php
+$allSchools = Student::withoutTenantScope()
+    ->where('graduated', false)
+    ->count();
+```
+
+If a codebase needs `withoutTenantScope()` in normal feature code, the model or the feature boundary is probably wrong. The exception should be rare enough to be conspicuous in review.
+
+## Route model binding can resolve before your scope
+
+Implicit binding is convenient and dangerous. Laravel resolves the model from the route parameter, and the tenant scope may not be the thing that decides which row is found.
+
+```php
+// Resolve through the relationship so the tenant is part of the query.
+Route::get('/students/{student}', function (Student $student) {
+    return view('students.show', compact('student'));
+})->scopeBindings();
+```
+
+`scopeBindings()` makes child bindings resolve through their parent relationship. Pair it with tenant-scoped route groups, and an ID from another tenant produces a 404 rather than a record.
+
+## Jobs and scheduled commands lose request context
+
+This is the failure I see most often. A queued job serializes a model ID and runs minutes later, in a fresh process with no tenant instance in the container.
+
+```php
+final class SendAttendanceDigest implements ShouldQueue
+{
+    public function __construct(
+        public readonly int $tenantId,
+        public readonly string $date,
+    ) {}
+
+    public function handle(): void
+    {
+        $tenant = Tenant::findOrFail($this->tenantId);
+        app()->instance(Tenant::class, $tenant);
+
+        // Now scoped queries behave the same way they do in a request.
+        $records = Attendance::query()
+            ->whereDate('date', $this->date)
+            ->get();
+    }
+}
+```
+
+Pass the tenant explicitly. Do not rely on `auth()->user()` or a request-bound singleton inside a job. The same rule applies to console commands, scheduled tasks, and any queue worker that processes multiple tenants in one process.
+
+## Cache keys and storage paths are tenant data
+
+A cache key like `students:active` is a cross-tenant bug waiting to happen. Namespace every key with the tenant identifier, preferably through one helper rather than string concatenation in twenty places.
+
+```php
+final class TenantCache
+{
+    public function __construct(private readonly Tenant $tenant) {}
+
+    public function key(string $suffix): string
+    {
+        return "tenant:{$this->tenant->id}:{$suffix}";
+    }
+}
+```
+
+The same applies to file storage. If two tenants upload a document called `invoice.pdf`, a shared directory is a data leak with extra steps. Use a tenant-prefixed disk path and check ownership before serving the file. A signed URL that anyone can forward is not access control.
+
+## Test isolation, not just features
+
+Feature tests prove that a tenant can use its own data. Isolation tests prove that it cannot use anyone else's. Write both, and make the isolation tests part of the normal suite.
+
+```php
+public function test_a_school_cannot_view_another_schools_student(): void
+{
+    $first = Tenant::factory()->create();
+    $second = Tenant::factory()->create();
+
+    $student = Student::factory()->for($second)->create();
+
+    $this->actingAs($first->admin)
+        ->get("/students/{$student->id}")
+        ->assertNotFound();
+}
+```
+
+The highest-value tests are the boring ones: index endpoints, show endpoints, exports, bulk actions, and anything that accepts an ID from the client. Run them for every role. A teacher and an administrator should both be blocked from crossing the tenant boundary, even if their permissions inside the tenant differ.
+
+## The checklist
+
+- Tenant is resolved in middleware and fails closed.
+- Tenant-scoped global scope is the default on every tenant-owned model.
+- Cross-tenant access is an explicit, reviewed escape hatch.
+- Route model bindings are scoped to the tenant relationship.
+- Jobs receive the tenant ID and re-establish context.
+- Cache keys and storage paths are tenant-prefixed.
+- Policies check tenant membership before role permissions.
+- Isolation tests exist for every role and every ID-bearing endpoint.
+
+Multi-tenancy is not a package you install. It is a set of boundaries you keep enforcing, including in the paths where no HTTP request exists. The systems that get it right are the ones that assume the leak is always one undiscovered code path away.

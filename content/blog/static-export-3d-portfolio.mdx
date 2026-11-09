@@ -1,0 +1,135 @@
+---
+title: "Shipping a scroll-driven 3D scene on a static export"
+titleNe: "स्ट्याटिक एक्सपोर्टमा स्क्रोल-चालित 3D दृश्य पुर्‍याउँदा"
+description: "A large canvas is easy to add and hard to keep fast. These are the constraints, lifecycle decisions, and fallbacks behind this portfolio's 3D layer."
+descriptionNe: "ठूलो क्यानभास थप्न सजिलो तर छिटो राख्न कठिन हुन्छ। यो पोर्टफोलियोको 3D तहपछाडिका सीमा, जीवनचक्र निर्णय र फलब्याकहरू।"
+date: "2026-11-04"
+category: "Frontend"
+categoryNe: "फ्रन्टइन्ड"
+tags: [Three.js, Next.js, Performance]
+relatedProjects: []
+featured: true
+---
+
+A 3D hero is the easy part. Keeping the rest of the page fast, accessible, and static-hostable is the actual project.
+
+This portfolio uses a fixed, decorative Three.js scene behind the home page. It is scroll-driven, it reacts to the pointer, and it is intentionally not the thing that delivers any content. Every word on the page exists in HTML before the canvas runs. That constraint shaped the implementation more than any visual reference.
+
+## Start with what must work without JavaScript
+
+The order of failure should be explicit:
+
+1. Static HTML with complete content and navigation.
+2. CSS-only composition if motion is reduced or WebGL is unavailable.
+3. The interactive scene, loaded after the page is useful.
+
+If the scene fails, the page does not. It becomes a well-designed static page. That is the baseline this site is built to fall back to.
+
+In Next.js App Router, `output: 'export'` means there is no server to rescue you at request time. The locale routes, project slugs, and article slugs all need `generateStaticParams`. SEO metadata is rendered at build time. The contact route cannot be a server action, so it is an email link instead.
+
+## Load the canvas after first paint
+
+The scene is a client component, imported dynamically with server-side rendering disabled. It mounts only when the browser is idle and the user has not asked for reduced motion.
+
+```tsx
+const SceneCanvas = dynamic(() => import('./SceneCanvas'), {
+  ssr: false,
+  loading: () => <SceneFallback />,
+});
+
+useEffect(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const id = window.requestIdleCallback(() => setReady(true), {
+    timeout: 2500,
+  });
+
+  return () => window.cancelIdleCallback(id);
+}, []);
+```
+
+The fallback is not a spinner. It is a finished CSS composition that looks intentional while the canvas is absent. If the browser never loads the scene, nothing looks broken.
+
+## Map scroll to a chapter, not to a timeline
+
+ScrollTrigger updates a single normalized progress value. The scene reads that value and derives everything else: camera position, group scale, chapter visibility.
+
+```ts
+ScrollTrigger.create({
+  start: 0,
+  end: 'max',
+  onUpdate: (self) => setProgress(self.progress),
+});
+```
+
+Inside the render loop, interpolate between camera keyframes rather than creating a tween per section. This keeps the number of active animations predictable.
+
+```ts
+useFrame((state, delta) => {
+  const chapter = progress * (keyframes.length - 1);
+  const index = Math.min(Math.floor(chapter), keyframes.length - 2);
+  const t = chapter - index;
+
+  target.lerpVectors(keyframes[index].position, keyframes[index + 1].position, t);
+  camera.position.lerp(target, 1 - Math.exp(-4 * delta));
+  camera.lookAt(0, 0, 0);
+});
+```
+
+`1 - Math.exp(-k * delta)` gives frame-rate-independent damping without importing an easing library into the render loop.
+
+## Keep the draw calls boring
+
+The scene is deliberately small:
+
+- one faceted core with edges,
+- three thin orbital arcs,
+- one instanced field of small tokens,
+- a handful of chapter groups that scale in and out.
+
+Instancing matters. Sixty-four boxes as separate meshes is sixty-four draw calls for decoration nobody will inspect. One `instancedMesh` is one call.
+
+Materials are standard, lights are three, and there are no shadow maps, no environment downloads, and no post-processing pass. A transmission material would look impressive in a screenshot and cost more than the rest of the page combined.
+
+Pixel ratio is capped:
+
+```tsx
+<Canvas
+  dpr={[1, 1.75]}
+  gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+  frameloop={paused ? 'never' : 'always'}
+>
+```
+
+## Pause what is not visible
+
+A fixed canvas is visible across the whole home page, so pausing on scroll is not the win here. Pausing when the tab is hidden is.
+
+```ts
+useEffect(() => {
+  const onChange = () => setPaused(document.hidden);
+  document.addEventListener('visibilitychange', onChange);
+  return () => document.removeEventListener('visibilitychange', onChange);
+}, []);
+```
+
+`frameloop="never"` stops the loop entirely. On a laptop with twenty tabs open, this is the difference between a portfolio that behaves and one that drains a battery in the background.
+
+## Respect reduced motion at the source
+
+CSS `prefers-reduced-motion` does not stop a WebGL render loop. The check has to happen in JavaScript before the canvas mounts, and the static fallback must be genuinely static. No slow drifting, no autoplay. A decorative object that keeps moving against an explicit preference is not decoration anymore.
+
+The same principle applies to text effects and scroll reveals: the content is visible by default, and the animation is an enhancement applied only when motion is allowed.
+
+## What to measure
+
+The honest performance question is not "does the scene run at 60fps on my machine". It is:
+
+- What is the LCP element, and does the scene delay it?
+- How much JavaScript ships before the page is interactive?
+- Does the layout shift when the canvas mounts?
+- What does a mid-range phone do on a throttled connection?
+
+On this build, the LCP element is text, not the canvas. The canvas is fixed-position and mounts after first paint, so it cannot push content around. The HTML, fonts, and CSS carry the page; WebGL is the last layer.
+
+If the scene ever competes with the content for main-thread time, the scene loses. That is the trade I would make again. A portfolio is a communication tool before it is a demo reel, and an impressive object that makes the actual work harder to read has misunderstood its job.

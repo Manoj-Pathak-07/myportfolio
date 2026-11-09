@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <title>Multi-tenant school management — abstract tenant grid artwork</title>
+  <defs>
+    <radialGradient id="school-glow" cx="70%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#597BFF" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#0A0F19" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="#0A0F19"/>
+  <rect width="800" height="500" fill="url(#school-glow)"/>
+  <g stroke="#E9F1FF" stroke-opacity=".05">
+    <path d="M0 100H800M0 200H800M0 300H800M0 400H800"/>
+    <path d="M100 0V500M200 0V500M300 0V500M400 0V500M500 0V500M600 0V500M700 0V500"/>
+  </g>
+  <g stroke="#597BFF" stroke-opacity=".18">
+    <path d="M470 148H680M470 218H680M470 288H680M470 358H680"/>
+    <path d="M510 120V390M590 120V390M670 120V390"/>
+  </g>
+  <g fill="#0D1627" stroke="#E9F1FF" stroke-opacity=".16">
+    <rect x="470" y="148" width="40" height="40"/>
+    <rect x="550" y="148" width="40" height="40"/>
+    <rect x="630" y="148" width="40" height="40"/>
+    <rect x="470" y="218" width="40" height="40"/>
+    <rect x="550" y="218" width="40" height="40"/>
+    <rect x="630" y="218" width="40" height="40"/>
+    <rect x="470" y="288" width="40" height="40"/>
+    <rect x="550" y="288" width="40" height="40"/>
+    <rect x="630" y="288" width="40" height="40"/>
+    <rect x="470" y="358" width="40" height="40"/>
+    <rect x="550" y="358" width="40" height="40"/>
+    <rect x="630" y="358" width="40" height="40"/>
+  </g>
+  <rect x="550" y="218" width="40" height="40" fill="#597BFF" fill-opacity=".55" stroke="#597BFF"/>
+  <rect x="630" y="288" width="40" height="40" fill="#A88CFF" fill-opacity=".35" stroke="#A88CFF"/>
+  <g fill="none" stroke="#597BFF" stroke-opacity=".5">
+    <rect x="446" y="124" width="288" height="290"/>
+  </g>
+  <circle cx="290" cy="250" r="104" fill="none" stroke="#597BFF" stroke-opacity=".25"/>
+  <circle cx="290" cy="250" r="62" fill="none" stroke="#A88CFF" stroke-opacity=".35"/>
+  <circle cx="290" cy="250" r="5" fill="#E9F1FF" fill-opacity=".8"/>
+  <path d="M394 250H446" stroke="#597BFF" stroke-opacity=".3" stroke-dasharray="3 6"/>
+  <text x="52" y="60" font-family="ui-monospace, Menlo, monospace" font-size="11" letter-spacing="4" fill="#9CAAC2">SAAS / TENANT ISOLATION</text>
+  <text x="52" y="452" font-family="Helvetica Neue, Arial, sans-serif" font-size="28" letter-spacing="-1" fill="#E9F1FF">School Management</text>
+</svg>

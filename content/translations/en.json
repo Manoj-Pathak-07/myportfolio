@@ -1,0 +1,394 @@
+{
+  "meta": {
+    "siteName": "Manoj Pathak",
+    "defaultTitle": "Manoj Pathak — Full Stack & Flutter Developer",
+    "defaultDescription": "Portfolio of Manoj Pathak, a Full Stack and Flutter developer in Kathmandu building scalable web platforms, mobile apps, APIs, and digital products.",
+    "home": {
+      "title": "Manoj Pathak — Full Stack & Flutter Developer in Kathmandu",
+      "description": "I build high-performance websites, scalable SaaS platforms, backend systems, and Flutter mobile applications. Based in Kathmandu, Nepal."
+    },
+    "projects": {
+      "title": "Projects — Manoj Pathak",
+      "description": "Case studies and workstreams across SaaS, web applications, e-commerce, mobile applications, and business websites."
+    },
+    "experience": {
+      "title": "Experience — Manoj Pathak",
+      "description": "Full-stack experience at Webcreation Nepal and Shakta Technology, plus ongoing BCA study."
+    },
+    "about": {
+      "title": "About — Manoj Pathak",
+      "description": "Full Stack and Flutter developer in Kathmandu working across Next.js, React, Laravel, MySQL, and mobile applications."
+    },
+    "blog": {
+      "title": "Build logs & notes — Manoj Pathak",
+      "description": "Engineering notes on multi-tenancy, order processing, performance, and building for the web."
+    },
+    "lab": {
+      "title": "Lab — Manoj Pathak",
+      "description": "Small frontend experiments in interaction, motion, and 3D built for this portfolio."
+    },
+    "contact": {
+      "title": "Contact — Manoj Pathak",
+      "description": "Contact Manoj Pathak by email or WhatsApp for full-stack, Flutter, and product engineering work."
+    },
+    "resume": {
+      "title": "Resume — Manoj Pathak",
+      "description": "Resume of Manoj Pathak, Full Stack and Flutter developer in Kathmandu, Nepal."
+    },
+    "notFound": {
+      "title": "Page not found — Manoj Pathak",
+      "description": "The page you were looking for does not exist."
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "experience": "Experience",
+    "about": "About",
+    "blog": "Blog",
+    "lab": "Lab",
+    "contact": "Contact",
+    "menu": "Menu",
+    "close": "Close",
+    "primary": "Primary navigation",
+    "footer": "Footer navigation",
+    "skip": "Skip to content",
+    "skills": "Skills"
+  },
+  "common": {
+    "caseStudy": "View case study",
+    "viewAll": "View all",
+    "readArticle": "Read article",
+    "visitSite": "Visit live site",
+    "sourceCode": "Source code",
+    "demo": "Live demo",
+    "copyEmail": "Copy email",
+    "copied": "Copied",
+    "printResume": "Print / save as PDF",
+    "downloadResume": "Download resume",
+    "resume": "Resume",
+    "back": "Back",
+    "all": "All",
+    "featured": "Featured",
+    "minRead": "min read",
+    "role": "Role",
+    "stack": "Technology",
+    "features": "What it includes",
+    "architecture": "Architecture",
+    "challenge": "The challenge",
+    "solution": "The approach",
+    "relatedProjects": "Related work",
+    "relatedArticles": "Related articles",
+    "onThisPage": "On this page",
+    "search": "Search",
+    "searchPlaceholder": "Search articles",
+    "noResults": "No results. Try a different term.",
+    "clearFilters": "Clear filters",
+    "filterBy": "Filter by",
+    "share": "Copy link",
+    "shareCopied": "Link copied",
+    "backToProjects": "All projects",
+    "backToBlog": "All articles",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "languages": "Languages",
+    "status": "Status",
+    "category": "Category",
+    "present": "Present",
+    "opensNewTab": "opens in a new tab",
+    "switchTo": "Switch to Nepali",
+    "switchToShort": "नेपाली",
+    "language": "Language",
+    "loading": "Loading",
+    "scroll": "Scroll",
+    "verified": "Verified",
+    "pending": "Pending",
+    "downloadCv": "Download CV",
+    "theme": "Color theme",
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
+  },
+  "hero": {
+    "eyebrow": "HELLO, I'M MANOJ PATHAK",
+    "lead": "I'm a Full Stack Developer based in Kathmandu, Nepal, currently working at Webcreation Nepal. I build high-performance websites, scalable SaaS platforms, powerful backend systems, and modern mobile applications using Next.js, React, Laravel, and Flutter.",
+    "primaryCta": "Explore My Work",
+    "secondaryCta": "Download Resume",
+    "metaRole": "Role",
+    "metaBase": "Base",
+    "metaLanguages": "Languages",
+    "scroll": "Scroll to explore",
+    "chapter": "Beyond the Code",
+    "subtitle": "Full Stack Developer · Flutter Developer · Software Engineer",
+    "headline": "I build digital experiences that perform, scale & deliver.",
+    "statement": "Clean code. Fast experiences. Scalable solutions.",
+    "techStack": "NEXT.JS / REACT / LARAVEL / FLUTTER / MYSQL",
+    "tertiaryCta": "Let's Connect",
+    "location": "Based in Kathmandu, Nepal"
+  },
+  "home": {
+    "about": {
+      "eyebrow": "01 — About",
+      "title": "More Than Just Writing Code.",
+      "lead": "I'm Manoj Pathak, a Full Stack Developer and Flutter mobile application developer currently working at Webcreation Nepal.",
+      "link": "More about me",
+      "pillars": [
+        {
+          "title": "Interface",
+          "body": "Product surfaces in React and Next.js — typed, responsive, accessible, and built to stay fast as the product grows."
+        },
+        {
+          "title": "Server",
+          "body": "Laravel APIs and application boundaries that keep business logic independent of presentation."
+        },
+        {
+          "title": "Data",
+          "body": "Relational schemas and scoped queries that make correct behaviour the path of least resistance."
+        }
+      ],
+      "highlight": "I don't just build interfaces. I build complete digital solutions."
+    },
+    "skills": {
+      "eyebrow": "02 — Capability",
+      "title": "The Technologies Behind My Work.",
+      "lead": "Six connected areas across web, backend, mobile, data, architecture, and tooling. Select one to see the tools and where they show up.",
+      "note": "Tools change. The durable part is understanding how interfaces, application logic, mobile clients, and data stay consistent as a product grows."
+    },
+    "work": {
+      "eyebrow": "03 — Selected work",
+      "title": "Selected Work. Built With Purpose.",
+      "lead": "From business websites to scalable SaaS platforms and mobile applications, here are some of the digital solutions I've worked on.",
+      "link": "All projects"
+    },
+    "experience": {
+      "eyebrow": "04 — Experience",
+      "title": "Experience That Builds Better Software.",
+      "lead": "Full-stack work across Webcreation Nepal and Shakta Technology, from responsive interfaces and APIs to multi-tenant products.",
+      "link": "Full experience"
+    },
+    "writing": {
+      "eyebrow": "05 — Writing",
+      "title": "Build Logs.",
+      "lead": "Thoughts, lessons, experiments, and practical insights from building software.",
+      "link": "All articles"
+    },
+    "contact": {
+      "eyebrow": "06 — Contact",
+      "title": "Let's Build Something Great Together.",
+      "lead": "Whether you're looking for a full-stack developer, planning a digital product, or simply want to connect, I'd be happy to hear from you. I enjoy working on meaningful projects and solving interesting technical challenges.",
+      "cta": "Chat on WhatsApp",
+      "edition": "Portfolio · 2026"
+    },
+    "performance": {
+      "eyebrow": "07 — Performance",
+      "title": "Performance Isn't an Afterthought.",
+      "emphasis": "It's Part of the Architecture.",
+      "lead": "Fast software is designed, not patched in at the end."
+    },
+    "services": {
+      "eyebrow": "08 — What I build",
+      "title": "From Ideas to Real-World Applications.",
+      "lead": "Six ways I help turn a product requirement into something reliable, usable, and ready to grow."
+    },
+    "education": {
+      "eyebrow": "09 — Education",
+      "title": "Learning, Building, Evolving.",
+      "lead": "Formal study in computer applications, paired with practical product work.",
+      "link": "Experience & education"
+    }
+  },
+  "projects": {
+    "eyebrow": "Selected work",
+    "title": "Selected Work. Built With Purpose.",
+    "lead": "From business websites to scalable SaaS platforms and mobile applications, here are some of the digital solutions I've worked on.",
+    "result": "Projects",
+    "empty": "No projects match this filter yet.",
+    "statusNote": "Projects without a public URL are shown without a link. No screenshots, metrics, or client names are invented.",
+    "workstreamsTitle": "At Webcreation Nepal",
+    "workstreamsLead": "The kinds of products and platforms I work on in my current role. Client names and links are omitted where they are not public.",
+    "mobileNote": "Flutter mobile case studies are being prepared and will appear here only when the work can be shared publicly.",
+    "allProjects": "All Projects"
+  },
+  "projectDetail": {
+    "eyebrow": "Case study",
+    "overview": "Overview",
+    "role": "My role",
+    "challenge": "The challenge",
+    "solution": "The approach",
+    "features": "What it includes",
+    "architecture": "How it is put together",
+    "stack": "Technology",
+    "links": "Links",
+    "info": "Project record",
+    "category": "Category",
+    "status": "Status",
+    "pending": "Public link pending",
+    "more": "More work",
+    "gallery": "Screenshots",
+    "coverNote": "Original cover artwork — not a screenshot.",
+    "galleryEmpty": "Screenshots will be added when they can be shared.",
+    "employer": "Employer / context",
+    "contributions": "Key contributions"
+  },
+  "experiencePage": {
+    "eyebrow": "Experience",
+    "title": "Experience That Builds Better Software.",
+    "lead": "Full-stack roles, responsibilities, and the academic foundation behind the work. Dates that were not supplied are not invented.",
+    "current": "Current role",
+    "responsibilities": "Responsibilities",
+    "technologies": "Stack",
+    "education": "Education",
+    "educationLead": "Academic foundation, with status fields kept editable in the content layer.",
+    "verificationTitle": "Verified information only",
+    "verificationBody": "This page intentionally omits roles whose dates or responsibilities have not been confirmed. A second, conflicting current role is not published.",
+    "selectedWork": "Selected work",
+    "backToAbout": "About me",
+    "previousRole": "Previous role"
+  },
+  "aboutPage": {
+    "eyebrow": "About",
+    "title": "More Than Just Writing Code.",
+    "lead": "A Full Stack and Flutter developer in Kathmandu, focused on complete digital products rather than isolated interfaces.",
+    "storyTitle": "How I work",
+    "philosophyTitle": "Principles",
+    "educationTitle": "Education",
+    "interestsTitle": "Interests",
+    "photoCaption": "Manoj Pathak · Kathmandu, Nepal",
+    "resumeTitle": "Resume",
+    "resumeLead": "A print-ready version of this profile, generated from the same content files as the site.",
+    "resumeCta": "Open resume",
+    "factsTitle": "At a glance",
+    "factLocation": "Location",
+    "factRole": "Current role",
+    "factEducation": "Education",
+    "factLanguages": "Languages",
+    "factFocus": "Focus"
+  },
+  "blogPage": {
+    "eyebrow": "Writing",
+    "title": "Build Logs.",
+    "lead": "Thoughts, lessons, experiments, and practical insights from building software.",
+    "searchPlaceholder": "Search by title, tag, or category",
+    "noResults": "No articles match your search.",
+    "fallbackNote": "A curated Nepali translation of this article is not available yet. You are reading the English original.",
+    "toc": "On this page",
+    "author": "Written by",
+    "published": "Published",
+    "back": "All articles",
+    "tags": "Tags",
+    "featured": "Featured article"
+  },
+  "labPage": {
+    "eyebrow": "Lab",
+    "title": "Small experiments, real code.",
+    "lead": "Interaction studies built for this site. No mockups and no fake demos — each one runs.",
+    "note": "These experiments are original to this portfolio, not client work.",
+    "experiments": "Experiments",
+    "openSourceTitle": "Elsewhere on GitHub",
+    "openSourceBody": "Ongoing experiments and open code live on GitHub. The profile is public; only repositories that exist are linked.",
+    "githubCta": "Open GitHub profile"
+  },
+  "contactPage": {
+    "eyebrow": "Contact",
+    "title": "Have an Idea? Let's Make It Real.",
+    "lead": "Whether you're looking for a full-stack developer, planning a digital product, or simply want to connect, I'd be happy to hear from you. I enjoy working on meaningful projects and solving interesting technical challenges.",
+    "emailTitle": "Email",
+    "emailBody": "The most reliable route. Copy it or open your mail app.",
+    "phoneTitle": "Phone",
+    "phoneBody": "For calls and messages in Nepal.",
+    "socialTitle": "Elsewhere",
+    "formTitle": "Prefer a form?",
+    "formBody": "No form endpoint is configured for this static build, so there is no form that silently drops your message. If you configure an external form service, the link will appear here.",
+    "formCta": "Open contact form",
+    "availabilityTitle": "Availability",
+    "locationTitle": "Location",
+    "responseTitle": "Response",
+    "responseBody": "Email is read personally. Genuine enquiries get a reply.",
+    "faqTitle": "Common questions",
+    "faqLead": "Quick answers about the work, the stack, and the best way to get in touch.",
+    "faq": [
+      {
+        "question": "What does Manoj Pathak do?",
+        "answer": "Manoj is a full-stack and Flutter developer. He builds responsive websites, SaaS platforms, backend APIs, and mobile applications, from interface work through to production delivery."
+      },
+      {
+        "question": "Where is he based?",
+        "answer": "He is based in Kathmandu, Nepal and works with teams anywhere."
+      },
+      {
+        "question": "Which technologies does he work with?",
+        "answer": "His primary stack is Next.js, React, TypeScript, Laravel, PHP, MySQL, and Flutter. He focuses on performance, maintainability, and accessible interfaces."
+      },
+      {
+        "question": "What is his current role?",
+        "answer": "He currently works at Webcreation Nepal as a Full Stack Developer and Flutter Developer. He previously worked at Shakta Technology."
+      },
+      {
+        "question": "How can I contact him?",
+        "answer": "Email manojjj123123@gmail.com or message +977 9813405728 on WhatsApp. Email is the most reliable route for detailed enquiries."
+      }
+    ],
+    "resumeTitle": "Resume",
+    "resumeBody": "A print-ready profile, or a PDF if one has been added.",
+    "resumeCta": "View resume",
+    "whatsappTitle": "WhatsApp",
+    "whatsappBody": "The fastest route for a quick conversation.",
+    "instagramTitle": "Instagram",
+    "instagramBody": "A public look at the person behind the work."
+  },
+  "resumePage": {
+    "eyebrow": "Resume",
+    "title": "Manoj Pathak",
+    "print": "Print / save as PDF",
+    "hint": "Use the browser print dialog to save this page as a PDF.",
+    "summary": "Profile",
+    "experience": "Experience",
+    "education": "Education",
+    "skills": "Technical skills",
+    "selectedProjects": "Selected projects",
+    "contact": "Contact",
+    "languages": "Languages",
+    "note": "This resume is generated from the portfolio's content files. Confirm every date before publishing.",
+    "back": "Back to portfolio"
+  },
+  "footer": {
+    "tagline": "Building fast, scalable, and meaningful digital experiences.",
+    "navigation": "Navigate",
+    "elsewhere": "Elsewhere",
+    "built": "Manoj Pathak. All rights reserved.",
+    "rights": "2026",
+    "top": "Back to top",
+    "local": "Kathmandu, Nepal",
+    "role": "Full Stack Developer & Flutter Developer",
+    "closing": "Designed with purpose. Built with performance in mind."
+  },
+  "status": {
+    "live": "Live",
+    "in-development": "In development",
+    "private": "Private build"
+  },
+  "categories": {
+    "logistics": "Logistics",
+    "corporate": "Corporate",
+    "ecommerce": "E-Commerce",
+    "media": "Media",
+    "saas": "SaaS Platforms",
+    "web": "Web Applications",
+    "mobile": "Mobile Applications",
+    "business": "Business Websites"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "This route doesn't resolve.",
+    "body": "The page you were looking for has moved, been renamed, or never existed. The navigation still works.",
+    "cta": "Return home"
+  },
+  "aria": {
+    "breadcrumb": "Breadcrumb",
+    "cover": "Abstract cover artwork for",
+    "toc": "Table of contents",
+    "scrollProgress": "Article reading progress",
+    "scene": "Decorative 3D scene",
+    "sceneFallback": "Decorative illustration of the portfolio's geometric motif"
+  }
+}
